@@ -2,18 +2,16 @@
 
 namespace App\Entity;
 
-class Lego 
+class Lego
 {
-
-    private $id;
-    private $name;
-    private $collection;
-    private $description;
-    private $price;
-    private $pieces;
-    private $boxImage;
-    private $legoImage;
-
+    private int $id;
+    private string $name;
+    private string $collection;
+    private string $description;
+    private float $price;
+    private int $pieces;
+    private string $boxImage;
+    private string $legoImage;
 
     public function __construct(int $id, string $name, string $collection)
     {
@@ -27,10 +25,9 @@ class Lego
         return $this->id;
     }
 
-    public function setId(int $id): Lego
+    public function setId(int $id): void
     {
         $this->id = $id;
-        return $this;
     }
 
     public function getName(): string
@@ -38,10 +35,9 @@ class Lego
         return $this->name;
     }
 
-    public function setName(string $name): Lego
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return $this;
     }
 
     public function getCollection(): string
@@ -49,10 +45,9 @@ class Lego
         return $this->collection;
     }
 
-    public function setCollection(string $collection): Lego
+    public function setCollection(string $collection): void
     {
         $this->collection = $collection;
-        return $this;
     }
 
     public function getDescription(): string
@@ -60,10 +55,9 @@ class Lego
         return $this->description;
     }
 
-    public function setDescription(string $description): Lego
+    public function setDescription(string $description): void
     {
         $this->description = $description;
-        return $this;
     }
 
     public function getPrice(): float
@@ -71,10 +65,9 @@ class Lego
         return $this->price;
     }
 
-    public function setPrice(float $price): Lego
+    public function setPrice(float $price): void
     {
         $this->price = $price;
-        return $this;
     }
 
     public function getPieces(): int
@@ -82,10 +75,9 @@ class Lego
         return $this->pieces;
     }
 
-    public function setPieces(int $pieces): Lego
+    public function setPieces(int $pieces): void
     {
         $this->pieces = $pieces;
-        return $this;
     }
 
     public function getBoxImage(): string
@@ -93,10 +85,9 @@ class Lego
         return $this->boxImage;
     }
 
-    public function setBoxImage(string $boxImage): Lego
+    public function setBoxImage(string $boxImage): void
     {
         $this->boxImage = $boxImage;
-        return $this;
     }
 
     public function getLegoImage(): string
@@ -104,15 +95,8 @@ class Lego
         return $this->legoImage;
     }
 
-    public function setLegoImage(string $legoImage): Lego
+    public function setLegoImage(string $legoImage): void
     {
         $this->legoImage = $legoImage;
-        return $this;
     }
-
-
 }
-
-    
-
-?>
