@@ -8,8 +8,12 @@ namespace App\Controller;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use stdClass;
-use App\Entity\Lego;
 use Symfony\Component\HttpFoundation\Response;
+
+use App\Entity\Lego;
+use App\Service\CreditsGenerator;
+use App\Service\DatabaseInterface;
+
 
 /* le nom de la classe doit être cohérent avec le nom du fichier */
 class LegoController extends AbstractController
@@ -56,6 +60,13 @@ class LegoController extends AbstractController
             'legos' => $legos,
         ]);
     }
+
+    #[Route('/credits', 'credits')]
+    public function credits(CreditsGenerator $credits): Response
+    {
+        return new Response($credits->getCredits());
+    }
+
 
    // L’attribute #[Route] indique ici que l'on associe la route
    // "/" à la méthode home pour que Symfony l'exécute chaque fois
