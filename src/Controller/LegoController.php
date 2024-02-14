@@ -13,49 +13,28 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Lego;
 use App\Service\CreditsGenerator;
 use App\Service\DatabaseInterface;
-
+use Symfony\Component\VarDumper\Cloner\Data;
 
 /* le nom de la classe doit être cohérent avec le nom du fichier */
 class LegoController extends AbstractController
 {
     private array $legos = [];
 
-    public function __construct()
-    {
-        $data = file_get_contents(__DIR__ . '../../data.json');
-        $legosData = json_decode($data);
-
-        foreach ($legosData as $legoData) {
-            $lego = new Lego(
-                $legoData->id,
-                $legoData->name,
-                $legoData->collection
-            );
-            $lego->setDescription($legoData->description);
-            $lego->setPrice($legoData->price);
-            $lego->setPieces($legoData->pieces);
-            $lego->setBoxImage($legoData->images->box);
-            $lego->setLegoImage($legoData->images->bg);
-            $this->legos[] = $lego;
-        }
-    }   
-
     #[Route('/')]
-    public function home()
+    public function home(DatabaseInterface $database)
     {   
+        $this->legos = $database->getAllLegos();
+
         return $this->render('/lego.html.twig', [
             'legos' => $this->legos,
         ]);
     }
 
 
-    #[Route('/{collection}', 'filter_by_collection', requirements: ['collection' => 'Creator|Star Wars|Creator Expert'])]
-    public function filter($collection): Response
+    #[Route('/{collection}', 'filter_by_collection', requirements: ['collection' => 'Creator|Star Wars|Creator Expert|Harry Potter'])]
+    public function filter(DatabaseInterface $database, string $collection): Response
     {
-        $legos = array_filter($this->legos, function ($lego) use ($collection) {
-            return $lego->getCollection() === $collection;
-        });
-
+        $legos = $database->getLegoByCollection($collection);
         return $this->render('/lego.html.twig', [
             'legos' => $legos,
         ]);
