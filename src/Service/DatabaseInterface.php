@@ -14,7 +14,7 @@ class DatabaseInterface
     
     public function getAllLegos()
     {
-        $sql = 'SELECT * FROM lego';
+        // $sql = 'SELECT * FROM lego';
 
         $pdo = new \PDO('mysql:host=tp-symfony-mysql;dbname=lego_store', 'root', 'root');
         $statement = $pdo->query('SELECT * FROM lego');
@@ -41,10 +41,25 @@ class DatabaseInterface
 
     public function getLegoByCollection(string $collection)
     {
-        return array_filter($this->legos, function ($lego) use ($collection) {
-            return $lego->getCollection() === $collection;
-        });
-        
+        $pdo = new \PDO('mysql:host=tp-symfony-mysql;dbname=lego_store', 'root', 'root');
+        $statement = $pdo->prepare('SELECT * FROM lego WHERE collection = :collection');
+        $statement->execute(['collection' => $collection]);
+        $legosData = $statement->fetchAll();
+        $legos = [];
+        foreach ($legosData as $legoData) {
+            $lego = new Lego(
+                $legoData["id"],
+                $legoData["name"],
+                $legoData["collection"]
+            );
+            $lego->setDescription($legoData["description"]);
+            $lego->setPrice($legoData["price"]);
+            $lego->setPieces($legoData["pieces"]);
+            $lego->setBoxImage($legoData["imagebox"]);
+            $lego->setLegoImage($legoData["imagebg"]);
+            $legos[] = $lego;
+        }
+        return $legos;
     }
 
 }

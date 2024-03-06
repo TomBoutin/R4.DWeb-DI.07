@@ -82,5 +82,29 @@
             "box": "LEGO_75192_Box.jpg",
             "bg": "LEGO_75192_Main.png"
         }
-    }   
+    },
+    {
+        "collection": "Harry Potter",
+        "id": 76391,
+        "name": "Icônes de Poudlard",
+        "description": "Le set LEGO® Harry Potter Icônes de Poudlard - Édition Collector est une reproduction des objets les plus mémorables de la série, réunis dans une pièce d’exposition anniversaire conçue pour les adultes passionnés de l’univers Harry Potter.",
+        "pieces": 3010,
+        "price": 249.99,
+        "images": {
+          "box": "LEGO_76391_Box.jpg",
+          "bg": "LEGO_76391_Main.png"
+        }
+      },
+      {
+        "collection": "Harry Potter",
+        "id": 71043,
+        "name": "Le château Poudlard",
+        "description": "La magie prend vie avec LEGO® Harry Potter™ 71043 château Poudlard™ ! Cet ensemble LEGO Harry Potter de collection très détaillé comprend plus de 6 000 pièces et offre une expérience de construction enrichissante. Il comprend de nombreux points clés de la série Harry Potter, et tu pourras découvrir des tours, des tourelles, des chambres, des salles de classe, des créatures...",
+        "pieces": 6020,
+        "price": 419.99,
+        "images": {
+          "box": "LEGO_71043_Box.jpg",
+          "bg": "LEGO_71043_Main.jpg"
+        }
+      }   
 ]

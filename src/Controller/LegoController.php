@@ -14,27 +14,42 @@ use App\Entity\Lego;
 use App\Service\CreditsGenerator;
 use App\Service\DatabaseInterface;
 use Symfony\Component\VarDumper\Cloner\Data;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Entity;
+
+// public function findByCollection($value): array
+// {
+//     return $this->createQueryBuilder('l')
+//         ->andWhere('l.exampleField = :val')
+//         ->setParameter('val', $value)
+//         ->orderBy('l.id', 'ASC')
+//         ->setMaxResults(10)
+//         ->getQuery()
+//         ->getResult()
+//     ;
+// }
 
 /* le nom de la classe doit être cohérent avec le nom du fichier */
 class LegoController extends AbstractController
 {
     private array $legos = [];
 
+    // mettre à jour votre Controller pour remplacer l’ancien service DatabaseInterface par celui de Doctrine PopulateDatabaseCommand
+    // Commencez par mettre à jour la route principale (“/”) sachant que tout MachinRepository possède une méthode findAll() qui retourne un tableau de toutes les entités Machin disponibles dans la base
     #[Route('/')]
-    public function home(DatabaseInterface $database)
-    {   
-        $this->legos = $database->getAllLegos();
-
+    public function home(EntityManagerInterface $legoManager): Response
+    {
+        $legos = $legoManager->getRepository(Lego::class)->findAll();
         return $this->render('/lego.html.twig', [
-            'legos' => $this->legos,
+            'legos' => $legos,
         ]);
     }
 
-
     #[Route('/{collection}', 'filter_by_collection', requirements: ['collection' => 'Creator|Star Wars|Creator Expert|Harry Potter'])]
-    public function filter(DatabaseInterface $database, string $collection): Response
+    public function filterByCollection(string $collection, EntityManagerInterface $legoManager): Response
     {
-        $legos = $database->getLegoByCollection($collection);
+        $legos = $legoManager->getRepository(Lego::class)->findBy(['collection' => $collection]);
         return $this->render('/lego.html.twig', [
             'legos' => $legos,
         ]);
@@ -46,8 +61,36 @@ class LegoController extends AbstractController
         return new Response($credits->getCredits());
     }
 
+    #[Route('/test', 'test')]
+    public function createProduct(EntityManagerInterface $legoManager): Response
+    {
+        // chargez le json, créez un Lego pour chaque modèle et sauvegardez le dans votre base.
+        // php bin/console app:populate-database src/Data/data.json
+        $json = file_get_contents(__DIR__ . '/../Data/data.json');
+        $legos = json_decode($json, true);
+        
+        
+        foreach ($legos as $lego) {
+            $l = new Lego($lego['id'], $legoManager);
+            $l->setName($lego['name']);
+            $l->setCollection($lego['collection']);
+            $l->setDescription($lego['description']);
+            $l->setPrice($lego['price']);
+            $l->setPieces($lego['pieces']);
+            $l->setBoxImage($lego['imagebox']);
+            $l->setLegoImage($lego['imagebg']);
+            $legoManager->persist($l);
+        }
+    
+        $legoManager -> flush();
 
-   // L’attribute #[Route] indique ici que l'on associe la route
+        return new Response("Lego ajouté avec comme id : " . $l->getId());
+        
+    }
+
+
+
+//    Lattribute #[Route] indique ici que lon associe la route
    // "/" à la méthode home pour que Symfony l'exécute chaque fois
    // que l'on accède à la racine de notre site.
 
