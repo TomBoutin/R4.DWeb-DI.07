@@ -17,6 +17,8 @@ use Symfony\Component\VarDumper\Cloner\Data;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
+use App\Repository\LegoCollectionRepository;
+use App\Entity\LegoCollection;
 
 // public function findByCollection($value): array
 // {
@@ -41,19 +43,25 @@ class LegoController extends AbstractController
     public function home(EntityManagerInterface $legoManager): Response
     {
         $legos = $legoManager->getRepository(Lego::class)->findAll();
+        $collections = $legoManager->getRepository(LegoCollection::class)->findAll();
+
         return $this->render('/lego.html.twig', [
             'legos' => $legos,
+            'collections' => $collections,
         ]);
     }
 
-    #[Route('/{collection}', 'filter_by_collection', requirements: ['collection' => 'Creator|Star Wars|Creator Expert|Harry Potter'])]
-    public function filterByCollection(string $collection, EntityManagerInterface $legoManager): Response
-    {
-        $legos = $legoManager->getRepository(Lego::class)->findBy(['collection' => $collection]);
-        return $this->render('/lego.html.twig', [
-            'legos' => $legos,
-        ]);
-    }
+#[Route('/{name}', 'filter_by_collection', requirements: ['name' => 'Creator|Star Wars|Creator Expert|Harry Potter'])]
+public function filterByCollection(LegoCollection $collection, LegoCollectionRepository $collectionRepository): Response
+{
+    $legos = $collection->getLego();
+    $collections = $collectionRepository->findAll();
+
+    return $this->render('/lego.html.twig', [
+        'legos' => $legos,
+        'collections' => $collections,
+    ]);
+}
 
     #[Route('/credits', 'credits')]
     public function credits(CreditsGenerator $credits): Response
@@ -87,6 +95,14 @@ class LegoController extends AbstractController
         return new Response("Lego ajouté avec comme id : " . $l->getId());
         
     }
+
+    #[Route('/test/{name}', 'test')]
+    public function test(LegoCollection $collection): Response
+    {
+        dd($collection);
+    }
+
+
 
 
 
